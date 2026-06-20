@@ -468,7 +468,21 @@ export default function Findings() {
       setCopiedFindingId(null)
     }
   }
+  async function copyFindingId(findingId: string) {
+  try {
+    await navigator.clipboard.writeText(findingId)
 
+    setCopiedFindingId(findingId)
+
+    window.setTimeout(() => {
+      setCopiedFindingId((current) =>
+        current === findingId ? null : current
+      )
+    }, 1600)
+  } catch {
+    setCopiedFindingId(null)
+  }
+}
   // ─── Keyboard navigation ────────────────────────────────────────────────────
   const listRef = useRef<HTMLDivElement>(null)
 
@@ -940,9 +954,30 @@ export default function Findings() {
                     </div>
 
                     <div>
-                      <p className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-silver/35">Selected Finding</p>
-                      <h2 className="text-3xl font-black uppercase italic tracking-tight text-silver-bright">{selectedFinding.title}</h2>
-                    </div>
+  <p className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-silver/35">
+    Selected Finding
+  </p>
+
+  <h2 className="text-3xl font-black uppercase italic tracking-tight text-silver-bright">
+    {selectedFinding.title}
+  </h2>
+
+  <div className="mt-3 flex items-center gap-2">
+    <span className="text-xs font-mono text-silver/60">
+      ID: {selectedFinding.id}
+    </span>
+
+    <button
+      type="button"
+      onClick={() => copyFindingId(selectedFinding.id)}
+      className="border border-rag-blue/25 bg-rag-blue/10 px-2 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-rag-blue"
+    >
+      {copiedFindingId === selectedFinding.id
+        ? 'Copied'
+        : 'Copy ID'}
+    </button>
+  </div>
+</div>
 
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div className="border border-silver-bright/8 bg-charcoal-dark p-3">
@@ -1132,6 +1167,15 @@ export default function Findings() {
                         className="border border-rag-blue/25 bg-rag-blue/10 px-4 py-3 text-[10px] font-black uppercase tracking-[0.18em] text-rag-blue"
                       >
                         {copiedFindingId === selectedFinding.id ? 'Copied' : 'Copy Brief'}
+                      </button>
+                      <button
+                      type="button"
+                      onClick={() => copyFindingId(selectedFinding.id)}
+                      className="border border-rag-green/25 bg-rag-green/10 px-4 py-3 text-[10px] font-black uppercase tracking-[0.18em] text-rag-green"
+>
+                      {copiedFindingId === selectedFinding.id
+                      ? 'ID Copied'
+                       : 'Copy ID'}
                       </button>
                     </div>
                   </div>
